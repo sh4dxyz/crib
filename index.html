@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHADY OS v0.1 | Tactical Amber</title>
+    <title>SHADY OS v0.3 | Tactical Amber</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap');
         
@@ -31,115 +31,101 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
         }
 
-        /* Menu de jeu central */
-        #game-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            text-align: center;
-            z-index: 500;
-        }
-
-        .menu-item {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--matrix-orange);
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            letter-spacing: 5px;
-            position: relative;
-        }
-
-        .menu-item:hover {
-            transform: scale(1.1);
-            text-shadow: 0 0 20px var(--matrix-orange);
-        }
-
-        .menu-item::before {
-            content: "> ";
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .menu-item:hover::before {
-            opacity: 1;
-        }
-
         header { 
-            position: absolute; width: 100%; top: 5vh; text-align: center; z-index: 1000;
+            position: absolute; width: 100%; top: 5vh; 
+            display: flex; flex-direction: column; align-items: center; z-index: 1000;
         }
 
         #ascii-title {
-            font-family: monospace; white-space: pre; line-height: 1; display: inline-block; font-size: 8px;
-            color: var(--matrix-orange);
-            animation: flicker 2s infinite;
+            font-family: monospace; white-space: pre; line-height: 1.2; 
+            display: inline-block; font-size: 1.8vw; color: var(--matrix-orange);
+            text-align: center; animation: float 4s ease-in-out infinite, flicker 2s infinite;
         }
 
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-            95% { opacity: 1; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .glitch-active { animation: glitch-anim 0.2s linear infinite !important; text-shadow: 2px 0 red, -2px 0 cyan; }
+
+        @keyframes glitch-anim {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 2px); }
+            40% { transform: translate(-3px, -2px); }
+            60% { transform: translate(3px, 2px); }
+            80% { transform: translate(3px, -2px); }
+            100% { transform: translate(0); }
         }
+
+        #game-menu { display: flex; flex-direction: column; gap: 20px; text-align: center; z-index: 500; }
+
+        .menu-item {
+            font-family: 'Syncopate', sans-serif; font-size: 3rem; font-weight: 900;
+            color: var(--matrix-orange); cursor: pointer; text-decoration: none;
+            transition: all 0.3s ease; letter-spacing: 5px; position: relative;
+        }
+
+        .menu-item::before { content: ">"; position: absolute; left: -40px; opacity: 0; transition: all 0.2s ease; }
+        .menu-item:hover::before { opacity: 1; left: -30px; }
+        .menu-item:hover { transform: scale(1.05); text-shadow: 0 0 20px var(--matrix-orange); }
 
         .crt-effect::before {
             content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 99999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
+        .scanline-distort {
+            position: absolute; top: -100px; left: 0; width: 100%; height: 100px;
+            background: rgba(255, 255, 255, 0.05); opacity: 0.2; z-index: 100000;
+            pointer-events: none; filter: blur(5px); animation: scanline-pass 3s linear infinite;
+        }
+
+        @keyframes scanline-pass { 0% { top: -100px; } 100% { top: 100%; } }
+
         #terminal-overlay {
-            position: fixed; top: 50%; left: 50%; 
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 85%; height: 80%; background: rgba(10, 5, 0, 0.98);
-            border: 1px solid var(--matrix-orange);
-            z-index: 20000; display: none; padding: 20px; 
-            color: var(--matrix-orange); flex-direction: column;
-            opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 90%; height: 85%; background: rgba(10, 5, 0, 0.98);
+            border: 1px solid var(--matrix-orange); z-index: 20000; display: none; padding: 20px; 
+            color: var(--matrix-orange); flex-direction: column; opacity: 0; transition: all 0.4s ease;
             box-sizing: border-box;
         }
-
         #terminal-overlay.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        
-        #waveform-container {
-            height: 60px; border-top: 1px solid rgba(255,140,0,0.2); margin-top: auto;
-            display: flex; align-items: center; justify-content: center; gap: 3px;
-            padding: 0 10px; background: rgba(0,0,0,0.3);
-        }
 
+        /* Mobile Controls */
+        #mobile-controls { display: none; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 120px; margin: 10px auto; }
+        .ctrl-btn { background: rgba(255,140,0,0.2); border: 1px solid var(--matrix-orange); color: var(--matrix-orange); padding: 10px; cursor: pointer; text-align: center; }
+
+        #snake-canvas { background: #000; border: 1px solid rgba(255,140,0,0.3); display: block; margin: 0 auto; max-width: 100%; }
+        #ascii-cam-container { font-family: monospace; white-space: pre; font-size: 4px; line-height: 4px; text-align: center; display: none; overflow: hidden; background: #000; height: 200px; }
+
+        #waveform-container { height: 40px; border-top: 1px solid rgba(255,140,0,0.2); margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 3px; background: rgba(0,0,0,0.3); }
         .wave-bar { width: 4px; height: 10%; transition: height 0.1s ease; }
-
-        /* Repositionnement du Trigger Snake pour éviter le conflit avec le Footer */
-        #snake-trigger {
-            position: absolute; bottom: 80px; left: 40px; width: 40px; height: 40px;
-            border: 1px solid var(--matrix-orange); cursor: pointer; display: flex;
-            align-items: center; justify-content: center; font-size: 18px; opacity: 0.6;
-            font-family: 'Syncopate'; transition: 0.3s;
-        }
-        #snake-trigger:hover { opacity: 1; background: var(--matrix-orange); color: black; }
-
-        #snake-ui {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 30000; flex-direction: column; align-items: center; justify-content: center;
-        }
-
-        canvas { border: 1px solid var(--matrix-orange); background: #050505; }
+        
+        .eye-candy-btn { background: none; border: 1px solid var(--matrix-orange); color: var(--matrix-orange); padding: 8px; font-family: 'Syncopate'; font-size: 9px; cursor: pointer; transition: 0.3s; }
+        .eye-candy-btn:hover { background: var(--matrix-orange); color: black; box-shadow: 0 0 15px var(--matrix-orange); }
 
         footer { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; box-sizing: border-box; font-size: 9px; z-index: 1000; }
         #theme-btn { background: none; border: 1px solid var(--matrix-orange); color: var(--matrix-orange); cursor: pointer; padding: 8px 16px; font-family: 'Syncopate'; font-size: 8px; }
+
+        @media (max-width: 600px) {
+            #ascii-title { font-size: 3.5vw; }
+            .menu-item { font-size: 1.8rem !important; }
+            #terminal-content-wrapper { flex-direction: column; }
+            #file-manager { width: 100% !important; border-right: none !important; border-bottom: 1px solid rgba(255,140,0,0.2); height: 100px; }
+            #mobile-controls { display: grid; }
+        }
     </style>
 </head>
 <body class="crt-effect">
+    <div class="scanline-distort"></div>
 
     <header>
         <div id="ascii-title">
- ____  _   _    _    ____ __   __   ___  ____  
-/ ___|| | | |  / \  |  _ \\ \ / /  / _ \/ ___| 
-\___ \| |_| | / _ \ | | | |\ V /  | | | \___ \ 
- ___) | _ |/ ___ \| |_| | | |   | |_| |___) |
-|____/|_| |_/_/   \_\____/  |_|    \___/|____/ 
-                                     v0.1
+ ___ _  _   _   ___  __   __   ___  ___ 
+/ __| || | /_\ |   \ \ \ / /  / _ \/ __|
+\__ \ __ |/ _ \| |) | \ V /  | (_) \__ \
+|___/_||_/_/ \_\___/   |_|    \___/|___/
+                v0.3
         </div>
     </header>
 
@@ -153,35 +139,38 @@
 
     <div id="terminal-overlay">
         <div style="border-bottom: 1px solid var(--matrix-orange); padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; font-size: 12px;">
-            <span onclick="closeTerminal()" style="cursor:pointer; font-weight: bold;">[ SHADY_OS_CORE_v0.1 ] <span style="font-size: 9px; opacity: 0.7;">(CLIC TITRE = RETOUR)</span></span>
+            <span onclick="closeTerminal()" style="cursor:pointer; font-weight: bold;">[ SHADY_OS_CORE_v0.3 ]</span>
             <span id="clock">00:00:00</span>
         </div>
         
         <div id="terminal-content-wrapper" style="display:flex; flex:1; gap:20px; overflow: hidden;">
             <div id="file-manager" style="width:30%; border-right:1px solid rgba(255,140,0,0.2); overflow-y: auto;">
-                <div onclick="playDemo('Acid_Test_v1.mp3')" style="cursor:pointer; margin-bottom:10px;">> Acid_Test_v1.mp3</div>
-                <div onclick="playDemo('Deep_Grid_Loop.wav')" style="cursor:pointer; margin-bottom:10px;">> Deep_Grid_Loop.wav</div>
-                <div onclick="playDemo('Shadow_Protocol.flac')" style="cursor:pointer; margin-bottom:10px;">> Shadow_Protocol.flac</div>
+                <div class="file-link" onclick="playDemo('Acid_Test_v1.mp3')" style="cursor:pointer; margin-bottom:10px;">> Acid_Test_v1.mp3</div>
+                <div class="file-link" onclick="playDemo('Deep_Grid_Loop.wav')" style="cursor:pointer; margin-bottom:10px;">> Deep_Grid_Loop.wav</div>
+                <div class="file-link" onclick="startSnake()" style="cursor:pointer; margin-bottom:10px; color: #00ff00;">> SNAKE.EXE</div>
+                <div class="file-link" onclick="startAsciiCam()" style="cursor:pointer; margin-bottom:10px; color: #ff00ff;">> CAM_SCAN.SYS</div>
             </div>
-            <div id="viewer-panel" style="flex:1; padding:20px; font-size:12px; border: 1px inset rgba(255,140,0,0.1); background: rgba(0,0,0,0.2);">
-                <div id="sys-content">SÉLECTIONNEZ UN FICHIER POUR INITIALISER LE FLUX...</div>
+            
+            <div id="viewer-panel" style="flex:1; padding:15px; font-size:11px; border: 1px inset rgba(255,140,0,0.1); background: rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div id="sys-content">SÉLECTIONNEZ UN FICHIER...</div>
+                <canvas id="snake-canvas" width="300" height="300" style="display:none;"></canvas>
+                <div id="ascii-cam-container"></div>
+                
+                <div id="mobile-controls">
+                    <div></div><div class="ctrl-btn" onclick="setDir('up')">▲</div><div></div>
+                    <div class="ctrl-btn" onclick="setDir('left')">◀</div><div class="ctrl-btn" onclick="setDir('down')">▼</div><div class="ctrl-btn" onclick="setDir('right')">▶</div>
+                </div>
             </div>
         </div>
 
         <div id="waveform-container"></div>
         
-        <button onclick="closeTerminal()" style="margin-top:15px; background:var(--matrix-orange); border:none; color:black; cursor:pointer; padding:10px; font-family:'Syncopate'; font-size:10px;">RETOUR_MENU</button>
-    </div>
-
-    <div id="snake-trigger" title="SNAKE_PROTOCOL">S</div>
-
-    <div id="snake-ui">
-        <h2 style="font-family: 'Syncopate'; color: var(--matrix-orange);">SNAKE PROTOCOL</h2>
-        <p style="font-size: 10px; text-align: center;">Z-Q-S-D POUR DIRIGER. MANGEZ LES DATAS.</p>
-        <canvas id="snakeCanvas" width="300" height="300"></canvas>
-        <div style="margin-top: 15px;">
-            <button id="start-snake" style="background:var(--matrix-orange); border:none; padding:10px 20px; font-family:'Syncopate'; cursor:pointer;">PLAY</button>
-            <button onclick="document.getElementById('snake-ui').style.display='none'" style="background:none; border:1px solid var(--matrix-orange); color:var(--matrix-orange); padding:10px 20px; font-family:'Syncopate'; cursor:pointer; margin-left:10px;">EXIT</button>
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+            <button onclick="closeTerminal()" class="eye-candy-btn">RETOUR</button>
+            <div style="display:flex; gap: 10px;">
+                <button onclick="startSnake()" class="eye-candy-btn">PLAY SNAKE</button>
+                <button onclick="startAsciiCam()" class="eye-candy-btn">ACTIVER CAM</button>
+            </div>
         </div>
     </div>
 
@@ -190,57 +179,170 @@
         <div style="letter-spacing: 2px; opacity: 0.7;">TACTICAL_AMBER_v3.0</div>
     </footer>
 
+    <video id="webcam" style="display:none;" autoplay playsinline></video>
+    <canvas id="cam-temp-canvas" style="display:none;"></canvas>
+
 <script>
     const themeBtn = document.getElementById('theme-btn');
     const terminal = document.getElementById('terminal-overlay');
+    const asciiTitle = document.getElementById('ascii-title');
     const waveContainer = document.getElementById('waveform-container');
+    const snakeCanvas = document.getElementById('snake-canvas');
+    const sysContent = document.getElementById('sys-content');
+    const asciiCam = document.getElementById('ascii-cam-container');
+    const ctx = snakeCanvas.getContext('2d');
+    
     let isPlaying = false;
+    let isSnakeRunning = false;
+    let isCamRunning = false;
     let radarTime = 0;
 
-    // Waveform Setup
-    for(let i=0; i<40; i++) {
+    // --- WAVEFORM SETUP ---
+    for(let i=0; i<30; i++) {
         const bar = document.createElement('div');
         bar.className = 'wave-bar';
         waveContainer.appendChild(bar);
     }
 
-    function openTerminal() {
-        terminal.classList.add('active');
+    function openTerminal() { terminal.classList.add('active'); }
+    function closeTerminal() { 
+        terminal.classList.remove('active'); 
+        isPlaying = false; 
+        isSnakeRunning = false; 
+        stopCam();
     }
 
-    function closeTerminal() {
-        terminal.classList.remove('active');
-        isPlaying = false;
-    }
-
-    function playDemo(file) {
-        document.getElementById('sys-content').innerHTML = `LECTURE : <br><span style="color:white; font-size:16px;">${file}</span><br><br>STATUS: <span style="animation: blink 0.5s infinite">STREAMING...</span>`;
-        isPlaying = true;
-    }
-
-    function updateWaveform() {
-        if(!isPlaying) {
-            document.querySelectorAll('.wave-bar').forEach(b => { 
-                b.style.height = "5%"; 
-                b.style.background = "var(--matrix-orange)"; 
-                b.style.boxShadow = "none";
-            });
-            return;
-        }
-        const bars = document.querySelectorAll('.wave-bar');
-        bars.forEach((bar, i) => {
-            const h = 15 + Math.random() * 80;
-            const hue = (radarTime * 100 + i * 10) % 360;
-            bar.style.height = h + "%";
-            bar.style.background = `hsl(${hue}, 80%, 60%)`;
-            bar.style.boxShadow = `0 0 10px hsl(${hue}, 80%, 50%)`;
-        });
-    }
-
+    // --- THÈME LOGIQUE ---
     themeBtn.addEventListener('click', () => {
         const isLight = document.body.classList.toggle('light-theme');
         themeBtn.innerText = isLight ? "SOMBRE" : "CLAIR";
     });
+
+    // --- SNAKE GAME ---
+    let snake, food, direction, gameLoop;
+    function startSnake() {
+        stopCam();
+        sysContent.style.display = 'none';
+        asciiCam.style.display = 'none';
+        snakeCanvas.style.display = 'block';
+        isSnakeRunning = true;
+        snake = [{x: 10, y: 10}];
+        food = {x: 5, y: 5};
+        direction = 'right';
+        if(gameLoop) clearInterval(gameLoop);
+        gameLoop = setInterval(drawSnake, 100);
+    }
+
+    function setDir(d) { direction = d; }
+
+    window.addEventListener('keydown', e => {
+        if(!isSnakeRunning) return;
+        // Support AZERTY (Z Q S D) et Flèches
+        if((e.key === 'z' || e.key === 'ArrowUp') && direction !== 'down') direction = 'up';
+        if((e.key === 's' || e.key === 'ArrowDown') && direction !== 'up') direction = 'down';
+        if((e.key === 'q' || e.key === 'ArrowLeft') && direction !== 'right') direction = 'left';
+        if((e.key === 'd' || e.key === 'ArrowRight') && direction !== 'left') direction = 'right';
+    });
+
+    function drawSnake() {
+        ctx.fillStyle = 'black';
+        ctx.fillRect(0, 0, 300, 300);
+        
+        let head = {...snake[0]};
+        if(direction === 'right') head.x++;
+        if(direction === 'left') head.x--;
+        if(direction === 'up') head.y--;
+        if(direction === 'down') head.y++;
+
+        if(head.x === food.x && head.y === food.y) {
+            food = {x: Math.floor(Math.random()*15), y: Math.floor(Math.random()*15)};
+        } else {
+            snake.pop();
+        }
+
+        if(head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(s => s.x === head.x && s.y === head.y)) {
+            isSnakeRunning = false;
+            clearInterval(gameLoop);
+            sysContent.innerHTML = "GAME OVER. REESAYER ?";
+            sysContent.style.display = 'block';
+            snakeCanvas.style.display = 'none';
+            return;
+        }
+
+        snake.unshift(head);
+        ctx.fillStyle = 'var(--matrix-orange)';
+        snake.forEach(s => ctx.fillRect(s.x*15, s.y*15, 14, 14));
+        ctx.fillStyle = 'white';
+        ctx.fillRect(food.x*15, food.y*15, 14, 14);
+    }
+
+    // --- ASCII CAMERA ---
+    const video = document.getElementById('webcam');
+    const camCanvas = document.getElementById('cam-temp-canvas');
+    const camCtx = camCanvas.getContext('2d');
+    const chars = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+
+    async function startAsciiCam() {
+        isSnakeRunning = false;
+        clearInterval(gameLoop);
+        sysContent.style.display = 'none';
+        snakeCanvas.style.display = 'none';
+        asciiCam.style.display = 'block';
+        
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            isCamRunning = true;
+            renderCam();
+        } catch (e) {
+            sysContent.innerHTML = "ACCÈS CAMERA REFUSÉ.";
+            sysContent.style.display = 'block';
+        }
+    }
+
+    function stopCam() {
+        isCamRunning = false;
+        if(video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
+    }
+
+    function renderCam() {
+        if(!isCamRunning) return;
+        const w = 60, h = 45;
+        camCanvas.width = w; camCanvas.height = h;
+        camCtx.drawImage(video, 0, 0, w, h);
+        const data = camCtx.getImageData(0, 0, w, h).data;
+        let asciiStr = "";
+        for(let y=0; y<h; y++) {
+            for(let x=0; x<w; x++) {
+                const i = (y * w + x) * 4;
+                const gray = (data[i] + data[i+1] + data[i+2]) / 3;
+                asciiStr += chars[Math.floor((gray/255) * (chars.length - 1))];
+            }
+            asciiStr += "\n";
+        }
+        asciiCam.innerText = asciiStr;
+        setTimeout(() => requestAnimationFrame(renderCam), 1000/30);
+    }
+
+    // --- UTILS & ANIMATION ---
+    function playDemo(file) {
+        stopCam();
+        isSnakeRunning = false;
+        snakeCanvas.style.display = 'none';
+        asciiCam.style.display = 'none';
+        sysContent.style.display = 'block';
+        sysContent.innerHTML = `LECTURE : <br><span style="color:white;">${file}</span><br><br>STATUS: STREAMING...`;
+        isPlaying = true;
+    }
+
+    function updateWaveform() {
+        const bars = document.querySelectorAll('.wave-bar');
+        bars.forEach((bar, i) => {
+            const h = isPlaying ? (15 + Math.random() * 80) : 5;
+            bar.style.height = h + "%";
+            bar.style.background = isPlaying ? `hsl(${(radarTime * 100 + i * 10) % 360}, 80%, 60%)` : "var(--matrix-orange)";
+        });
+    }
 
     function animate() {
         radarTime += 0.015;
@@ -248,72 +350,9 @@
         requestAnimationFrame(animate);
     }
 
-    // --- SNAKE GAME LOGIC (Unchanged) ---
-    const canvas = document.getElementById('snakeCanvas');
-    const ctx = canvas.getContext('2d');
-    const box = 10;
-    let snake, food, direction, gameInterval;
-
-    document.getElementById('snake-trigger').onclick = () => {
-        document.getElementById('snake-ui').style.display = 'flex';
-    };
-
-    document.getElementById('start-snake').onclick = startSnake;
-
-    function startSnake() {
-        snake = [{x: 10 * box, y: 10 * box}];
-        food = { x: Math.floor(Math.random() * 29) * box, y: Math.floor(Math.random() * 29) * box };
-        direction = "RIGHT";
-        if(gameInterval) clearInterval(gameInterval);
-        gameInterval = setInterval(drawSnake, 80);
-        document.getElementById('start-snake').innerText = "RESTART";
-    }
-
-    document.addEventListener("keydown", (e) => {
-        const key = e.key.toLowerCase();
-        if((key === "z" || e.key === "ArrowUp") && direction !== "DOWN") direction = "UP";
-        if((key === "s" || e.key === "ArrowDown") && direction !== "UP") direction = "DOWN";
-        if((key === "q" || e.key === "ArrowLeft") && direction !== "RIGHT") direction = "LEFT";
-        if((key === "d" || e.key === "ArrowRight") && direction !== "LEFT") direction = "RIGHT";
-    });
-
-    function drawSnake() {
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        for(let i = 0; i < snake.length; i++) {
-            ctx.fillStyle = (i === 0) ? "#ff8c00" : "#aa5500";
-            ctx.fillRect(snake[i].x, snake[i].y, box, box);
-        }
-        ctx.fillStyle = "red";
-        ctx.fillRect(food.x, food.y, box, box);
-        let snakeX = snake[0].x;
-        let snakeY = snake[0].y;
-        if(direction === "LEFT") snakeX -= box;
-        if(direction === "UP") snakeY -= box;
-        if(direction === "RIGHT") snakeX += box;
-        if(direction === "DOWN") snakeY += box;
-        if(snakeX === food.x && snakeY === food.y) {
-            food = { x: Math.floor(Math.random() * 29) * box, y: Math.floor(Math.random() * 29) * box };
-        } else {
-            snake.pop();
-        }
-        let newHead = { x: snakeX, y: snakeY };
-        if(snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height || collision(newHead, snake)) {
-            clearInterval(gameInterval);
-            alert("SYSTEM CRASH: SNAKE DEAD");
-            return;
-        }
-        snake.unshift(newHead);
-    }
-
-    function collision(head, array) {
-        for(let i = 0; i < array.length; i++) {
-            if(head.x === array[i].x && head.y === array[i].y) return true;
-        }
-        return false;
-    }
-
     setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    setInterval(() => { asciiTitle.classList.add('glitch-active'); setTimeout(() => asciiTitle.classList.remove('glitch-active'), 250); }, 4000);
+    
     animate();
 </script>
 </body>
