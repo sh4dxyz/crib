@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>SHADY CRIB | Sound Portfolio</title>
+    <style>
+        :root {
+            --matrix-green: #00ff41;
+            --electric-purple: #a040ff;
+            --bg-color: radial-gradient(circle, #1a1a1a 0%, #050505 100%);
+            --text-main: #ffffff;
+            --footer-color: #555;
+        }
+
+        /* Thème Clair */
+        body.light-theme {
+            --bg-color: radial-gradient(circle, #ffffff 0%, #e0e0e0 100%);
+            --text-main: #000000;
+            --matrix-green: #008f11;
+            --electric-purple: #6a0dad;
+            --footer-color: #888;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            display: flex; flex-direction: column;
+            transition: background 0.5s ease;
+        }
+
+        header { text-align: center; padding: 3vh 0; z-index: 100; }
+        
+        h1 {
+            margin: 0; font-size: 3.2rem; letter-spacing: 10px; font-weight: 900;
+            background: linear-gradient(90deg, var(--matrix-green), var(--electric-purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(160, 64, 255, 0.4));
+            text-transform: uppercase;
+        }
+
+        #main-scene {
+            flex-grow: 1;
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            perspective: 1000px;
+        }
+
+        #sphere-container {
+            position: relative;
+            width: 0; height: 0;
+            transform-style: preserve-3d;
+        }
+
+        .matrix-item {
+            position: absolute;
+            font-weight: bold;
+            transition: color 0.3s, opacity 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            white-space: nowrap;
+            /* On utilise translate(-50%, -50%) pour que le centre du texte soit le pivot */
+            transform-origin: center center;
+        }
+
+        .ascii {
+            font-size: 10px;
+            pointer-events: none;
+            text-shadow: 0 0 5px rgba(255,255,255,0.1);
+        }
+
+        .keyword {
+            font-size: 18px;
+            color: var(--electric-purple);
+            text-shadow: 0 0 10px rgba(160, 64, 255, 0.5);
+            z-index: 1000;
+        }
+
+        /* Effet de zoom stable */
+        .keyword:hover {
+            color: var(--matrix-green) !important;
+            text-shadow: 0 0 20px var(--matrix-green);
+            z-index: 2000;
+            cursor: pointer;
+        }
+
+        footer {
+            padding: 2vh 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--footer-color);
+        }
+
+        /* BOUTON THEME */
+        #theme-toggle {
+            background: transparent;
+            border: 1px solid var(--footer-color);
+            color: var(--footer-color);
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        #theme-toggle:hover {
+            border-color: var(--electric-purple);
+            color: var(--electric-purple);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SHADY CRIB</h1>
+    </header>
+
+    <main id="main-scene">
+        <div id="sphere-container"></div>
+    </main>
+
+    <footer>
+        <button id="theme-toggle">SWITCH THEME</button>
+        <div>&copy; 2026 SHADY BECKOURY // SOUND DESIGNER</div>
+    </footer>
+
+<script>
+    const container = document.getElementById('sphere-container');
+    const themeToggle = document.getElementById('theme-toggle');
+    const keywords = ["WAVEFORMS", "FOLEY_ART", "MIXING", "SYNTHESIS", "UNREAL_AUDIO", "COMPOSITION", "AMBIANCE", "SOUND_FX"];
+    
+    const totalElements = 380;
+    const radius = Math.min(window.innerHeight, window.innerWidth) * 0.33;
+    let autoRotation = 0;
+    let isHovering = false;
+    let mouseX = 0, mouseY = 0;
+
+    for (let i = 0; i < totalElements; i++) {
+        const isKeyword = i > 10 && i % 40 === 0;
+        const item = document.createElement(isKeyword ? 'a' : 'span');
+        
+        const phi = Math.acos(-1 + (2 * i) / totalElements);
+        const theta = Math.sqrt(totalElements * Math.PI) * phi;
+
+        const x = radius * Math.sin(phi) * Math.cos(theta);
+        const y = radius * Math.sin(phi) * Math.sin(theta);
+        const z = radius * Math.cos(phi);
+
+        if (isKeyword) {
+            item.innerText = keywords[(i / 40) % keywords.length];
+            item.href = "#";
+            item.className = 'matrix-item keyword';
+            item.addEventListener('mouseenter', () => { isHovering = true; item.style.fontSize = "24px"; });
+            item.addEventListener('mouseleave', () => { isHovering = false; item.style.fontSize = "18px"; });
+        } else {
+            item.innerText = (i % 8 === 0) ? "┼" : "·";
+            item.className = 'matrix-item ascii';
+        }
+
+        item.dataset.x = x;
+        item.dataset.y = y;
+        item.dataset.z = z;
+        container.appendChild(item);
+    }
+
+    const items = document.querySelectorAll('.matrix-item');
+
+    function animate() {
+        if (!isHovering) autoRotation += 0.0025;
+
+        items.forEach(item => {
+            const x = parseFloat(item.dataset.x);
+            const y = parseFloat(item.dataset.y);
+            const z = parseFloat(item.dataset.z);
+
+            const cosY = Math.cos(autoRotation + mouseX);
+            const sinY = Math.sin(autoRotation + mouseX);
+            let xRot = x * cosY - z * sinY;
+            let zRot = x * sinY + z * cosY;
+
+            const cosX = Math.cos(mouseY);
+            const sinX = Math.sin(mouseY);
+            let yRot = y * cosX - zRot * sinX;
+            let zFinal = y * sinX + zRot * cosX;
+
+            const depth = (zFinal + radius) / (2 * radius);
+            const scale = (zFinal + radius * 1.5) / (radius * 2);
+            
+            // On utilise translate3d et on ajoute translate(-50%, -50%) pour garder le texte centré sur son point de coordonnée
+            item.style.transform = `translate3d(${xRot}px, ${yRot}px, ${zFinal}px) translate(-50%, -50%) scale(${scale})`;
+            
+            if (zFinal < -40) {
+                item.style.opacity = depth * 0.15;
+                item.style.pointerEvents = 'none';
+            } else {
+                item.style.opacity = depth + 0.4;
+                item.style.pointerEvents = 'auto';
+            }
+
+            if (!item.classList.contains('keyword')) {
+                const isDark = !document.body.classList.contains('light-theme');
+                item.style.color = zFinal > 0 ? (isDark ? '#00ff41' : '#008f11') : (isDark ? '#a040ff' : '#6a0dad');
+            }
+        });
+        requestAnimationFrame(animate);
+    }
+
+    // Toggle Theme
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX - window.innerWidth / 2) * 0.003;
+        mouseY = (e.clientY - window.innerHeight / 2) * 0.003;
+    });
+
+    animate();
+    window.addEventListener('resize', () => location.reload());
+</script>
+
+</body>
+</html>
