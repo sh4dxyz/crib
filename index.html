@@ -3,68 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHADY OS v0.3 | Tactical Amber</title>
+    <title>SHADY OS v0.3 | Tactical White</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap');
         
         :root { 
-            --matrix-orange: #ff8c00; 
-            --electric-purple: #ff4081; 
-            --bg: #0a0500; 
-            --text-main: #ffd194;
-            --accent-rgb: 255, 140, 0;
-        }
-
-        body.theme-matrix { 
-            --matrix-orange: #00ff00; 
-            --text-main: #00ff00;
-            --electric-purple: #00ff00;
-        }
-
-        body.theme-blue { 
-            --matrix-orange: #00d4ff; 
-            --text-main: #00d4ff;
-            --electric-purple: #0080ff;
-        }
-
-        body.theme-white { 
-            --matrix-orange: #ffffff; 
+            --matrix-orange: #ffffff; /* Thème blanc forcé */
+            --electric-purple: #cccccc; 
+            --bg: #0a0500;
             --text-main: #ffffff;
-            --electric-purple: #cccccc;
-        }
-
-        body.theme-orange { 
-            --matrix-orange: #ff8c00; 
-            --text-main: #ffd194;
-            --electric-purple: #ff4081;
+            --accent-rgb: 255, 255, 255;
         }
 
         body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
+            margin: 0;
+            padding: 0; width: 100%; height: 100%; 
             background: var(--bg); color: var(--text-main); 
             font-family: 'Courier New', monospace; overflow: hidden; 
             transition: color 0.8s ease-in-out;
         }
         
         #viewport { 
-            position: relative; width: 100vw; height: 100vh; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            position: relative;
+            width: 100vw; height: 100vh; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
 
         header { 
-            position: absolute; width: 100%; top: 5vh; 
+            position: absolute;
+            width: 100%; top: 5vh; 
             display: flex; flex-direction: column; align-items: center; z-index: 1000;
         }
 
         #ascii-title {
-            font-family: monospace; white-space: pre; line-height: 1.2; 
+            font-family: monospace;
+            white-space: pre; line-height: 1.2; 
             display: inline-block; font-size: 1.8vw; color: var(--matrix-orange);
             text-align: center; animation: float 4s ease-in-out infinite;
         }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        .glitch-active { animation: glitch-anim 0.2s linear infinite !important; text-shadow: 2px 0 red, -2px 0 cyan; }
+        .glitch-active { animation: glitch-anim 0.2s linear infinite !important; text-shadow: 2px 0 #888, -2px 0 #555; }
 
         @keyframes glitch-anim {
             0% { transform: translate(0); }
@@ -78,7 +58,8 @@
         #game-menu { display: flex; flex-direction: column; gap: 20px; text-align: center; z-index: 500; }
 
         .menu-item {
-            font-family: 'Syncopate', sans-serif; font-size: 3rem; font-weight: 900;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 3rem; font-weight: 900;
             color: var(--matrix-orange); cursor: pointer; text-decoration: none;
             transition: all 0.3s ease; letter-spacing: 5px; position: relative;
         }
@@ -88,35 +69,34 @@
         .menu-item:hover { transform: scale(1.05); text-shadow: 0 0 20px var(--matrix-orange); }
 
         .crt-effect::before {
-            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            content: " ";
+            display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
             z-index: 99999; background-size: 100% 3px, 3px 100%; pointer-events: none;
         }
 
         .scanline-distort {
-            position: absolute; top: -100px; left: 0; width: 100%; height: 100px;
+            position: absolute;
+            top: -100px; left: 0; width: 100%; height: 100px;
             background: rgba(255, 255, 255, 0.05); opacity: 0.2; z-index: 100000;
-            pointer-events: none; filter: blur(5px); animation: scanline-pass 3s linear infinite;
+            pointer-events: none;
+            filter: blur(5px); animation: scanline-pass 3s linear infinite;
         }
 
         @keyframes scanline-pass { 0% { top: -100px; } 100% { top: 100%; } }
 
-        /* OVERLAYS */
         .overlay {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-            width: 90%; height: 85%; background: rgba(10, 5, 0, 0.98);
+            position: fixed;
+            top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 90%; height: 85%; background: rgba(10, 10, 10, 0.98);
             border: 1px solid var(--matrix-orange); z-index: 20000; display: none; padding: 20px; 
             color: var(--matrix-orange); flex-direction: column; opacity: 0; transition: all 0.4s ease;
             box-sizing: border-box;
         }
         .overlay.active { display: flex; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        /* Portfolio Overlay */
-        #portfolio-overlay {
-            z-index: 20000;
-            overflow-y: auto;
-        }
+        #portfolio-overlay { z-index: 20000; overflow-y: auto; }
 
         #video-grid {
             display: grid;
@@ -137,137 +117,24 @@
 
         .video-container iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+            top: 0; left: 0; width: 100%; height: 100%; border: none;
         }
 
-        /* File Manager Overlay */
-        #terminal-overlay {
-            z-index: 20001;
-        }
-
-        /* Mobile Controls */
-        #mobile-controls { display: none; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 120px; margin: 10px auto; }
-        .ctrl-btn { background: rgba(255,140,0,0.2); border: 1px solid var(--matrix-orange); color: var(--matrix-orange); padding: 10px; cursor: pointer; text-align: center; user-select: none; }
-
-        #snake-canvas { background: #000; border: 1px solid rgba(255,140,0,0.3); display: block; margin: 0 auto; max-width: 100%; }
-        
-        #ascii-cam-container { 
-            font-family: monospace; 
-            white-space: pre; 
-            font-size: 6px; 
-            line-height: 6px; 
-            text-align: center; 
-            display: none; 
-            overflow: auto; 
-            background: #000; 
-            width: 100%;
-            max-height: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-
-        #sphere-container {
-            font-family: monospace;
-            white-space: pre;
-            font-size: 8px;
-            line-height: 8px;
-            text-align: center;
-            display: none;
-            background: #000;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            color: var(--matrix-orange);
-        }
-
-        #cam-controls {
-            display: none;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        #cam-controls.active {
-            display: flex;
-        }
-
-        .cam-preset-btn {
-            background: rgba(255,140,0,0.2);
-            border: 1px solid var(--matrix-orange);
-            color: var(--matrix-orange);
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 9px;
-            font-family: 'Courier New';
-            transition: 0.3s;
-        }
-
-        .cam-preset-btn:hover {
-            background: var(--matrix-orange);
-            color: #000;
-        }
-
-        #waveform-container { height: 40px; border-top: 1px solid rgba(255,140,0,0.2); margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 3px; background: rgba(0,0,0,0.3); }
-        .wave-bar { width: 4px; height: 10%; transition: height 0.1s ease; }
-        
         .eye-candy-btn { background: none; border: 1px solid var(--matrix-orange); color: var(--matrix-orange); padding: 8px; font-family: 'Syncopate'; font-size: 9px; cursor: pointer; transition: 0.3s; }
         .eye-candy-btn:hover { background: var(--matrix-orange); color: black; box-shadow: 0 0 15px var(--matrix-orange); }
 
-        footer { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 40px; box-sizing: border-box; font-size: 9px; z-index: 1000; }
-        #theme-btn { background: none; border: 1px solid var(--matrix-orange); color: var(--matrix-orange); cursor: pointer; padding: 8px 16px; font-family: 'Syncopate'; font-size: 8px; transition: 0.3s; }
-        #theme-btn:hover { background: var(--matrix-orange); color: #000; }
-
-        /* File Manager Button */
-        #file-manager-btn {
-            position: absolute;
-            bottom: 60px;
-            right: 40px;
-            width: 60px;
-            height: 60px;
-            background: rgba(10, 5, 0, 0.9);
-            border: 2px solid var(--matrix-orange);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-family: monospace;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            box-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
-            line-height: 1;
-        }
-
-        #file-manager-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px var(--matrix-orange);
-            background: rgba(255, 140, 0, 0.2);
-        }
-
-        /* Détection du tactile avec media query */
-        @media (hover: none) and (pointer: coarse) {
-            #mobile-controls { display: grid !important; }
+        footer { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: center; /* Centré car plus de bouton palette */
+            align-items: center; padding: 0 40px; box-sizing: border-box; font-size: 9px; z-index: 1000;
         }
 
         @media (max-width: 600px) {
             #ascii-title { font-size: 3.5vw; }
             .menu-item { font-size: 1.8rem !important; }
-            #terminal-content-wrapper { flex-direction: column; }
-            #file-manager { width: 100% !important; border-right: none !important; border-bottom: 1px solid rgba(255,140,0,0.2); height: 100px; }
             #video-grid { grid-template-columns: 1fr; }
-            #file-manager-btn { bottom: 70px; right: 20px; width: 50px; height: 50px; font-size: 20px; }
-            #ascii-cam-container { font-size: 3px; line-height: 3px; }
-            #sphere-container { font-size: 5px; line-height: 5px; }
         }
     </style>
 </head>
-<body class="crt-effect theme-orange">
+<body class="crt-effect">
     <div class="scanline-distort"></div>
 
     <header>
@@ -288,7 +155,6 @@
         </nav>
     </div>
 
-    <!-- PORTFOLIO OVERLAY -->
     <div id="portfolio-overlay" class="overlay">
         <div style="border-bottom: 1px solid var(--matrix-orange); padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; font-size: 12px;">
             <span style="font-weight: bold;">[ PORTFOLIO_SHOWCASE ]</span>
@@ -315,510 +181,29 @@
         </div>
     </div>
 
-    <!-- FILE MANAGER OVERLAY -->
-    <div id="terminal-overlay" class="overlay">
-        <div style="border-bottom: 1px solid var(--matrix-orange); padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; font-size: 12px;">
-            <span style="font-weight: bold;">[ SHADY_OS_CORE_v0.3 ]</span>
-            <span id="clock">00:00:00</span>
-        </div>
-        
-        <div id="terminal-content-wrapper" style="display:flex; flex:1; gap:20px; overflow: hidden;">
-            <div id="file-manager" style="width:30%; border-right:1px solid rgba(255,140,0,0.2); overflow-y: auto; padding-right: 10px;">
-                <div class="file-link" onclick="startSnake()" style="cursor:pointer; margin-bottom:10px; color: #00ff00; padding: 5px; transition: 0.2s;">> SNAKE.EXE</div>
-                <div class="file-link" onclick="startAsciiCam()" style="cursor:pointer; margin-bottom:10px; color: #ff00ff; padding: 5px; transition: 0.2s;">> CAM_SCAN.SYS</div>
-                <div class="file-link" onclick="startSphere()" style="cursor:pointer; margin-bottom:10px; color: #00d4ff; padding: 5px; transition: 0.2s;">> MY_WORLD.3D</div>
-            </div>
-            
-            <div id="viewer-panel" style="flex:1; padding:15px; font-size:11px; border: 1px inset rgba(255,140,0,0.1); background: rgba(0,0,0,0.2); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <div id="sys-content">SÉLECTIONNEZ UN FICHIER...</div>
-                
-                <div id="cam-controls">
-                    <button class="cam-preset-btn" onclick="setCamPreset(1)">NORMAL</button>
-                    <button class="cam-preset-btn" onclick="setCamPreset(2)">DENSE</button>
-                    <button class="cam-preset-btn" onclick="setCamPreset(3)">MATRICE</button>
-                    <button class="cam-preset-btn" onclick="setCamPreset(4)">INVERSE</button>
-                    <button class="cam-preset-btn" onclick="setCamPreset(5)">COULEUR</button>
-                </div>
-                
-                <canvas id="snake-canvas" width="400" height="400" style="display:none;"></canvas>
-                <div id="ascii-cam-container"></div>
-                <div id="sphere-container"></div>
-                
-                <div id="mobile-controls">
-                    <div></div><div class="ctrl-btn" onclick="setDir('up')">▲</div><div></div>
-                    <div class="ctrl-btn" onclick="setDir('left')">◀</div><div class="ctrl-btn" onclick="setDir('down')">▼</div><div class="ctrl-btn" onclick="setDir('right')">▶</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="waveform-container"></div>
-        
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-            <button onclick="closeTerminal()" class="eye-candy-btn">RETOUR</button>
-            <div style="display:flex; gap: 10px;">
-                <button onclick="startSnake()" class="eye-candy-btn">PLAY SNAKE</button>
-                <button onclick="startAsciiCam()" class="eye-candy-btn">ACTIVER CAM</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FILE MANAGER BUTTON -->
-    <div id="file-manager-btn" onclick="openTerminal()" title="Gestionnaire de fichiers">
-┌─┐<br>│☺│<br>└─┘
-    </div>
-
     <footer>
-        <button id="theme-btn" onclick="cycleTheme()">PALETTE</button>
-        <div style="letter-spacing: 2px; opacity: 0.7;">TACTICAL_AMBER_v3.0</div>
+        <div style="letter-spacing: 2px; opacity: 0.7;">TACTICAL_WHITE_v3.0</div>
     </footer>
 
-    <video id="webcam" style="display:none;" autoplay playsinline></video>
-    <canvas id="cam-temp-canvas" style="display:none;"></canvas>
-
 <script>
-    const themeBtn = document.getElementById('theme-btn');
-    const terminal = document.getElementById('terminal-overlay');
     const portfolio = document.getElementById('portfolio-overlay');
     const asciiTitle = document.getElementById('ascii-title');
-    const waveContainer = document.getElementById('waveform-container');
-    const snakeCanvas = document.getElementById('snake-canvas');
-    const sysContent = document.getElementById('sys-content');
-    const asciiCam = document.getElementById('ascii-cam-container');
-    const camControls = document.getElementById('cam-controls');
-    const sphereContainer = document.getElementById('sphere-container');
-    const ctx = snakeCanvas.getContext('2d');
-    
-    let isPlaying = false;
-    let isSnakeRunning = false;
-    let isCamRunning = false;
-    let isSphereRunning = false;
-    let radarTime = 0;
-    let currentTheme = 0;
-    let camPreset = 1;
-
-    const themes = ['theme-orange', 'theme-matrix', 'theme-blue', 'theme-white'];
-    const themeNames = ['ORANGE', 'MATRIX', 'CYBER', 'GHOST'];
-
-    // --- WAVEFORM SETUP ---
-    for(let i=0; i<30; i++) {
-        const bar = document.createElement('div');
-        bar.className = 'wave-bar';
-        waveContainer.appendChild(bar);
-    }
-
-    // --- THEME CYCLING ---
-    function cycleTheme() {
-        document.body.classList.remove(themes[currentTheme]);
-        currentTheme = (currentTheme + 1) % themes.length;
-        document.body.classList.add(themes[currentTheme]);
-        themeBtn.innerText = themeNames[currentTheme];
-    }
 
     // --- PORTFOLIO FUNCTIONS ---
     function openPortfolio() { 
-        portfolio.classList.add('active'); 
+        portfolio.classList.add('active');
     }
     
     function closePortfolio() { 
-        portfolio.classList.remove('active'); 
+        portfolio.classList.remove('active');
     }
 
-    // --- TERMINAL FUNCTIONS ---
-    function openTerminal() { 
-        terminal.classList.add('active'); 
-    }
-    
-    function closeTerminal() { 
-        terminal.classList.remove('active'); 
-        isPlaying = false; 
-        isSnakeRunning = false;
-        isSphereRunning = false;
-        if(gameLoop) clearInterval(gameLoop);
-        stopCam();
-        hideAllViewers();
-    }
-
-    function hideAllViewers() {
-        sysContent.style.display = 'none';
-        snakeCanvas.style.display = 'none';
-        asciiCam.style.display = 'none';
-        camControls.classList.remove('active');
-        sphereContainer.style.display = 'none';
-    }
-
-    // --- 3D SPHERE ASCII ---
-    let sphereAngle = 0;
-    let waveTime = 0;
-    let tiltTime = 0;
-    let textAngle = 0;
-    
-    function startSphere() {
-        hideAllViewers();
-        sphereContainer.style.display = 'block';
-        stopCam();
-        isSnakeRunning = false;
-        isSphereRunning = true;
-        clearInterval(gameLoop);
-        sphereAngle = 0;
-        waveTime = 0;
-        tiltTime = 0;
-        textAngle = 0;
-        renderSphere();
-    }
-
-    function renderSphere() {
-        if(!isSphereRunning) return;
-
-        const width = 80;
-        const height = 50;
-        const radius = 15;
-        const centerX = width / 2;
-        const centerY = height / 2;
-        
-        let output = [];
-        for(let i = 0; i < height; i++) {
-            output[i] = new Array(width).fill(' ');
-        }
-
-        // Calcul de la vague (toutes les 4 secondes)
-        waveTime += 0.016;
-        const waveActive = (waveTime % 4) < 1;
-        const waveProgress = waveActive ? ((waveTime % 4) / 1) : 0;
-        
-        // Calcul du tilt (toutes les 8 secondes)
-        tiltTime += 0.016;
-        let tiltAngle = 0;
-        const tiltCycle = tiltTime % 8;
-        if(tiltCycle >= 7.5 && tiltCycle < 8) {
-            // Animation rapide de chute
-            const tiltProgress = (tiltCycle - 7.5) / 0.5;
-            if(tiltProgress < 0.3) {
-                tiltAngle = Math.PI * 0.3 * (tiltProgress / 0.3);
-            } else {
-                tiltAngle = Math.PI * 0.3 * (1 - ((tiltProgress - 0.3) / 0.7));
-            }
-        }
-
-        // Dessiner la sphère
-        for(let i = 0; i < height; i++) {
-            for(let j = 0; j < width; j++) {
-                const x = (j - centerX) / radius;
-                const y = (i - centerY) / (radius * 0.5);
-                const dist = x*x + y*y;
-                
-                if(dist <= 1) {
-                    let z = Math.sqrt(1 - dist);
-                    
-                    // Rotation de la sphère
-                    const rotX = x;
-                    const rotY = y * Math.cos(sphereAngle) - z * Math.sin(sphereAngle);
-                    const rotZ = y * Math.sin(sphereAngle) + z * Math.cos(sphereAngle);
-                    
-                    // Application du tilt
-                    const tiltY = rotY * Math.cos(tiltAngle) - rotZ * Math.sin(tiltAngle);
-                    const tiltZ = rotY * Math.sin(tiltAngle) + rotZ * Math.cos(tiltAngle);
-                    
-                    // Effet de vague
-                    let waveOffset = 0;
-                    if(waveActive) {
-                        const waveRadius = waveProgress * radius * 2;
-                        const distFromCenter = Math.sqrt((j - centerX)**2 + (i - centerY)**2);
-                        if(Math.abs(distFromCenter - waveRadius) < 3) {
-                            waveOffset = Math.sin((distFromCenter - waveRadius) * Math.PI) * 3;
-                        }
-                    }
-                    
-                    // Calcul de l'éclairage
-                    const light = (tiltZ + 1) / 2;
-                    const chars = " .:-=+*#%@";
-                    const charIndex = Math.floor(light * (chars.length - 1));
-                    
-                    if(i + waveOffset >= 0 && i + waveOffset < height) {
-                        output[Math.floor(i + waveOffset)][j] = chars[charIndex];
-                    }
-                }
-            }
-        }
-
-        // Dessiner le texte "MY WORLD" en orbite
-        textAngle += 0.02;
-        const textRadius = 25;
-        const text = "MY WORLD";
-        const textX = centerX + Math.cos(textAngle) * textRadius;
-        const textY = centerY + Math.sin(textAngle) * textRadius * 0.5;
-        
-        // Dessiner chaque lettre du texte
-        for(let i = 0; i < text.length; i++) {
-            const charX = Math.floor(textX + i - text.length/2);
-            const charY = Math.floor(textY);
-            
-            if(charX >= 0 && charX < width && charY >= 0 && charY < height) {
-                output[charY][charX] = text[i];
-                // Ajouter de l'épaisseur au texte
-                if(charY + 1 < height) output[charY + 1][charX] = text[i];
-                if(charX + 1 < width) output[charY][charX + 1] = text[i];
-            }
-        }
-
-        // Afficher la sortie
-        sphereContainer.innerText = output.map(row => row.join('')).join('\n');
-        
-        sphereAngle += 0.02;
-        requestAnimationFrame(renderSphere);
-    }
-
-    // --- SNAKE GAME ---
-    let snake, food, direction, gameLoop, score;
-    const gridSize = 20;
-    const tileSize = 20;
-
-    function startSnake() {
-        hideAllViewers();
-        snakeCanvas.style.display = 'block';
-        stopCam();
-        isSphereRunning = false;
-        isSnakeRunning = true;
-        isPlaying = false;
-        score = 0;
-        
-        snake = [{x: 10, y: 10}];
-        food = {
-            x: Math.floor(Math.random() * gridSize), 
-            y: Math.floor(Math.random() * gridSize)
-        };
-        direction = 'right';
-        
-        if(gameLoop) clearInterval(gameLoop);
-        gameLoop = setInterval(drawSnake, 120);
-    }
-
-    function setDir(d) { 
-        if(d === 'up' && direction !== 'down') direction = d;
-        if(d === 'down' && direction !== 'up') direction = d;
-        if(d === 'left' && direction !== 'right') direction = d;
-        if(d === 'right' && direction !== 'left') direction = d;
-    }
-
-    window.addEventListener('keydown', e => {
-        if(!isSnakeRunning) return;
-        
-        if((e.key === 'z' || e.key === 'Z' || e.key === 'ArrowUp') && direction !== 'down') {
-            direction = 'up';
-            e.preventDefault();
-        }
-        if((e.key === 's' || e.key === 'S' || e.key === 'ArrowDown') && direction !== 'up') {
-            direction = 'down';
-            e.preventDefault();
-        }
-        if((e.key === 'q' || e.key === 'Q' || e.key === 'ArrowLeft') && direction !== 'right') {
-            direction = 'left';
-            e.preventDefault();
-        }
-        if((e.key === 'd' || e.key === 'D' || e.key === 'ArrowRight') && direction !== 'left') {
-            direction = 'right';
-            e.preventDefault();
-        }
-    });
-
-    function drawSnake() {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
-        
-        let head = {...snake[0]};
-        if(direction === 'right') head.x++;
-        if(direction === 'left') head.x--;
-        if(direction === 'up') head.y--;
-        if(direction === 'down') head.y++;
-
-        if(head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
-            gameOver();
-            return;
-        }
-
-        if(snake.some(s => s.x === head.x && s.y === head.y)) {
-            gameOver();
-            return;
-        }
-
-        snake.unshift(head);
-
-        if(head.x === food.x && head.y === food.y) {
-            score++;
-            food = {
-                x: Math.floor(Math.random() * gridSize), 
-                y: Math.floor(Math.random() * gridSize)
-            };
-        } else {
-            snake.pop();
-        }
-
-        ctx.fillStyle = '#ff8c00';
-        snake.forEach((segment, index) => {
-            ctx.fillRect(
-                segment.x * tileSize + 1, 
-                segment.y * tileSize + 1, 
-                tileSize - 2, 
-                tileSize - 2
-            );
-            
-            if(index === 0) {
-                ctx.fillStyle = '#ffa500';
-                ctx.fillRect(
-                    segment.x * tileSize + 1, 
-                    segment.y * tileSize + 1, 
-                    tileSize - 2, 
-                    tileSize - 2
-                );
-                ctx.fillStyle = '#ff8c00';
-            }
-        });
-
-        ctx.fillStyle = Math.floor(Date.now() / 200) % 2 === 0 ? '#fff' : '#ff4081';
-        ctx.fillRect(
-            food.x * tileSize + 2, 
-            food.y * tileSize + 2, 
-            tileSize - 4, 
-            tileSize - 4
-        );
-
-        ctx.fillStyle = '#fff';
-        ctx.font = '12px Courier New';
-        ctx.fillText('SCORE: ' + score, 10, 20);
-    }
-
-    function gameOver() {
-        isSnakeRunning = false;
-        clearInterval(gameLoop);
-        sysContent.innerHTML = `GAME OVER<br><br>SCORE: ${score}<br><br>CLIQUEZ SUR "PLAY SNAKE" POUR RÉESSAYER`;
-        sysContent.style.display = 'block';
-        snakeCanvas.style.display = 'none';
-    }
-
-    // --- ASCII CAMERA ---
-    const video = document.getElementById('webcam');
-    const camCanvas = document.getElementById('cam-temp-canvas');
-    const camCtx = camCanvas.getContext('2d');
-    
-    const presets = {
-        1: { chars: " .:!*oe&#%@", w: 120, h: 70, size: 6, invert: false, color: false },
-        2: { chars: " .:-=+*#%@", w: 140, h: 80, size: 5, invert: false, color: false },
-        3: { chars: " ░▒▓█", w: 100, h: 60, size: 8, invert: false, color: false },
-        4: { chars: "@%#*+=-:. ", w: 120, h: 70, size: 6, invert: true, color: false },
-        5: { chars: " .:!*oe&#%@", w: 120, h: 70, size: 6, invert: false, color: true }
-    };
-
-    function setCamPreset(preset) {
-        camPreset = preset;
-    }
-
-    async function startAsciiCam() {
-        hideAllViewers();
-        asciiCam.style.display = 'block';
-        camControls.classList.add('active');
-        isSnakeRunning = false;
-        isSphereRunning = false;
-        isPlaying = false;
-        clearInterval(gameLoop);
-        
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            video.srcObject = stream;
-            isCamRunning = true;
-            renderCam();
-        } catch (e) {
-            sysContent.innerHTML = "ACCÈS CAMERA REFUSÉ.";
-            sysContent.style.display = 'block';
-            asciiCam.style.display = 'none';
-            camControls.classList.remove('active');
-        }
-    }
-
-    function stopCam() {
-        isCamRunning = false;
-        asciiCam.style.display = 'none';
-        camControls.classList.remove('active');
-        if(video.srcObject) video.srcObject.getTracks().forEach(t => t.stop());
-    }
-
-    function renderCam() {
-        if(!isCamRunning) return;
-        
-        const preset = presets[camPreset];
-        const { chars, w, h, size, invert, color } = preset;
-        
-        asciiCam.style.fontSize = size + 'px';
-        asciiCam.style.lineHeight = size + 'px';
-        
-        camCanvas.width = w;
-        camCanvas.height = h;
-        camCtx.drawImage(video, 0, 0, w, h);
-        const data = camCtx.getImageData(0, 0, w, h).data;
-        
-        let asciiStr = "";
-        for(let y = 0; y < h; y++) {
-            for(let x = 0; x < w; x++) {
-                const i = (y * w + x) * 4;
-                const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
-                const gray = (r + g + b) / 3;
-                
-                let charIndex = Math.floor((gray / 255) * (chars.length - 1));
-                if(invert) charIndex = chars.length - 1 - charIndex;
-                
-                let char = chars[charIndex];
-                
-                if(color) {
-                    const hue = Math.floor((x / w) * 360);
-                    asciiStr += `<span style="color:hsl(${hue},80%,60%)">${char}</span>`;
-                } else {
-                    asciiStr += char;
-                }
-            }
-            asciiStr += "\n";
-        }
-        
-        asciiCam.innerHTML = asciiStr;
-        setTimeout(() => requestAnimationFrame(renderCam), 1000/30);
-    }
-
-    // --- UTILS & ANIMATION ---
-    function updateWaveform() {
-        const bars = document.querySelectorAll('.wave-bar');
-        bars.forEach((bar, i) => {
-            const h = isPlaying ? (15 + Math.random() * 80) : 5;
-            bar.style.height = h + "%";
-            bar.style.background = isPlaying ? `hsl(${(radarTime * 100 + i * 10) % 360}, 80%, 60%)` : "var(--matrix-orange)";
-        });
-    }
-
-    function animate() {
-        radarTime += 0.015;
-        updateWaveform();
-        requestAnimationFrame(animate);
-    }
-
-    // --- HORLOGE & GLITCH ---
-    setInterval(() => { 
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString(); 
-    }, 1000);
-    
+    // --- GLITCH ANIMATION ---
     setInterval(() => { 
         asciiTitle.classList.add('glitch-active'); 
         setTimeout(() => asciiTitle.classList.remove('glitch-active'), 250); 
     }, 4000);
-    
-    // --- HOVER EFFECT FILE MANAGER ---
-    document.querySelectorAll('.file-link').forEach(link => {
-        link.addEventListener('mouseenter', function() {
-            this.style.background = 'rgba(255,140,0,0.2)';
-        });
-        link.addEventListener('mouseleave', function() {
-            this.style.background = 'transparent';
-        });
-    });
-    
-    animate();
+
 </script>
 </body>
 </html>
