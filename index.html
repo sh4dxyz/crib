@@ -137,6 +137,15 @@
             border: none;
         }
 
+        /* SoundCloud Player Style */
+        .soundcloud-container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 30px;
+            border: 1px solid var(--matrix-orange);
+            background: #000;
+        }
+
         /* --- CINEMA MODE --- */
         #cinema-overlay {
             position: fixed;
@@ -246,7 +255,7 @@
 
     <section id="hero">
         <div id="ascii-title">
- ___ _  _   _   ___  __   __   ___  ___ 
+___ _   _   ___  __   __   ___  ___ 
 / __| || | /_\ |   \ \ \ / /  / _ \/ __|
 \__ \ __ |/ _ \| |) | \ V /  | (_) \__ \
 |___/_||_/_/ \_\___/   |_|    \___/|___/
@@ -273,6 +282,11 @@
                 <div class="video-click-overlay"></div>
                 <iframe src="https://www.youtube.com/embed/uw9A8QfMdIw?controls=0" frameborder="0"></iframe>
             </div>
+        </div>
+
+        <!-- SoundCloud Player Embed -->
+        <div class="soundcloud-container">
+            <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1865324901&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
         </div>
     </section>
 
