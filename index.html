@@ -3,329 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHADY OS v0.3 | Tactical White</title>
+    <title>Shady Beckoury — Sound Designer</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@500;600&display=swap');
-                
-        :root { 
-            --matrix-orange: #ffffff; 
-            --bg: #0a0500;
-            --text-main: #ffffff;
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --text-muted: #888888;
+            --divider: rgba(255, 255, 255, 0.1);
         }
 
-        body, html { 
+        [data-theme="light"] {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --text-muted: #666666;
+            --divider: rgba(0, 0, 0, 0.1);
+        }
+
+        body, html {
             margin: 0;
-            padding: 0; 
-            width: 100%; 
-            background: var(--bg); 
-            color: var(--text-main); 
-            font-family: 'Courier New', monospace;
-            overflow-y: auto;
-            overflow-x: hidden;
+            padding: 0;
+            width: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
             scroll-behavior: smooth;
+            transition: background-color 0.6s ease, color 0.6s ease;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .crt-effect::before {
-            content: " ";
-            display: block; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            bottom: 0; 
-            right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
-            z-index: 9999; 
-            background-size: 100% 3px, 3px 100%; 
-            pointer-events: none;
-        }
-
-        .scanline-distort {
+        /* Navigation / Theme Toggle */
+        nav {
             position: fixed;
-            top: -100px; 
-            left: 0; 
-            width: 100%; 
-            height: 100px;
-            background: rgba(255, 255, 255, 0.05); 
-            opacity: 0.1; 
-            z-index: 10000;
-            pointer-events: none; 
-            filter: blur(5px); 
-            animation: scanline-pass 3s linear infinite;
+            top: 0;
+            width: 100%;
+            padding: 30px 40px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 100;
         }
 
-        @keyframes scanline-pass { 
-            0% { top: -100px; } 
-            100% { top: 100%; } 
+        #theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: color 0.3s ease;
         }
 
-        section {
+        #theme-toggle:hover {
+            color: var(--text-color);
+        }
+
+        /* Layout Structure */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px 20px 60px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 20px;
-            box-sizing: border-box;
-            position: relative;
         }
 
-        #hero {
-            padding-top: 5vh;
-            padding-bottom: 20px;
-        }
-
-        #ascii-title {
-            font-family: monospace;
-            white-space: pre; 
-            line-height: 1.2; 
-            font-size: 1.8vw; 
-            color: var(--matrix-orange);
-            text-align: center; 
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-10px); } 
-        }
-
-        .intro-text {
-            max-width: 850px;
+        header {
             text-align: center;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 1.3rem;
-            font-weight: 500;
+            margin-bottom: 100px;
+            animation: fadeIn 1.5s ease forwards;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: clamp(2rem, 5vw, 4rem);
+            letter-spacing: 2px;
+            margin: 0 0 10px 0;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-weight: 300;
+            font-size: 1.1rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+
+        .bio {
+            max-width: 750px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 300;
             line-height: 1.8;
-            letter-spacing: 0.3px;
-            margin: 50px 0 70px 0; /* Espacement fortement augmenté au-dessus et en-dessous */
-            color: #eeeeee;
-            padding: 0 15px;
+            color: var(--text-color);
+            margin: 0 auto 100px auto;
+            opacity: 0;
+            animation: fadeIn 1.5s ease 0.3s forwards;
+        }
+
+        /* Sections */
+        section {
+            width: 100%;
+            margin-bottom: 120px;
+            opacity: 0;
+            animation: fadeIn 1.5s ease 0.6s forwards;
         }
 
         .section-title {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1.5rem;
-            letter-spacing: 10px;
-            margin: 20px 0 35px 0;
-            border-bottom: 1px solid var(--matrix-orange);
-            padding-bottom: 10px;
-            width: 80%;
-            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 4px;
             text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            text-align: center;
         }
 
+        /* Video Grid */
         #video-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            width: 90%;
-            max-width: 1200px;
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            border: none;
-            background: #000;
-            cursor: pointer;
-            overflow: hidden;
-        }
-
-        .video-click-overlay {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            z-index: 5;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            border: none;
-        }
-
-        .content-divider {
-            width: 80%;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.2);
-            margin: 60px 0 30px 0;
-        }
-
-        .soundcloud-container {
-            width: 90%;
-            max-width: 1200px;
-            margin-top: 10px;
-            border: none;
-            background: #000;
-        }
-
-        #cinema-overlay {
-            position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 20000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #cinema-container {
-            width: 80%;
-            max-width: 1000px;
-            aspect-ratio: 16/9;
-            border: 1px solid var(--matrix-orange);
-            position: relative;
-            box-shadow: 0 0 50px rgba(255,255,255,0.1);
-        }
-
-        #close-cinema {
-            position: absolute;
-            top: -40px; 
-            right: 0;
-            color: white; 
-            font-family: 'Syncopate';
-            cursor: pointer; 
-            font-size: 14px;
-        }
-
-        #contact-form {
-            width: 100%;
-            max-width: 600px;
-            display: flex;
-            flex-direction: column;
             gap: 20px;
-            padding-bottom: 50px;
-            margin-top: 20px;
+            width: 100%;
         }
 
-        .submit-btn {
-            background: none;
-            border: 1px solid var(--matrix-orange);
-            color: var(--matrix-orange);
-            padding: 15px;
-            font-family: 'Syncopate', sans-serif;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            background: #111;
+            transition: transform 0.3s ease;
+        }
+
+        .video-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* SoundCloud */
+        .audio-container {
+            width: 100%;
+            background: transparent;
+        }
+
+        /* Contact Section */
+        #contact {
             text-align: center;
-            display: block;
+            border-top: 1px solid var(--divider);
+            padding-top: 80px;
         }
 
-        .submit-btn:hover { 
-            background: var(--matrix-orange); 
-            color: #000; 
+        .email-link {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 300;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .email-link:hover {
+            opacity: 0.5;
         }
 
         footer {
-            padding: 20px; 
-            text-align: center; 
-            font-size: 9px;
-            letter-spacing: 3px; 
-            opacity: 0.6;
+            margin-top: 60px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
         }
 
-        @media (max-width: 800px) {
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
             #video-grid { grid-template-columns: 1fr; }
-            #ascii-title { font-size: 3.5vw; }
-            #cinema-container { width: 95%; }
-            .section-title { font-size: 1.1rem; }
-            .intro-text { font-size: 1.05rem; margin: 30px 0 45px 0; }
+            nav { padding: 20px; }
+            main { padding-top: 100px; }
         }
     </style>
 </head>
-<body class="crt-effect">
+<body>
 
-    <div class="scanline-distort"></div>
+    <nav>
+        <button id="theme-toggle">Clair</button>
+    </nav>
 
-    <div id="cinema-overlay">
-        <div id="cinema-container">
-            <span id="close-cinema" onclick="closeCinema()">✕ FERMER LE MODE CINÉMA</span>
-            <iframe id="cinema-iframe" width="100%" height="100%" src="" allowfullscreen></iframe>
-        </div>
-    </div>
+    <main>
+        <header>
+            <h1>SHADY BECKOURY</h1>
+            <p class="subtitle">Sound Designer & Producer</p>
+        </header>
 
-    <section id="hero">
-        <div id="ascii-title">
-___ _   _   ___  __   __   ___  ___ 
-/ __| || | /_\ |   \ \ \ / /  / _ \/ __|
-\__ \ __ |/ _ \| |) | \ V /  | (_) \__ \
-|___/_||_/_/ \_\___/   |_|    \___/|___/
-                                    v0.3
-        </div>
-    </section>
-
-    <section id="portfolio">
-        <p class="intro-text">
-            Sound Designer et Dj/producteur avec 10+ ans d'expérience. Spécialiste de la composition multigenres et du mix. J’ai acquis une Maîtrise avancée des outils de l'industrie (Serum, iZotope RX, Waves). Je transforme vos concepts en identités sonores de haute qualité.
+        <p class="bio">
+            Basé à Bruxelles (Schaerbeek), fort de plus de 10 ans d'expérience sur FL Studio et diplômé en design sonore à Technocité. 
+            Spécialiste de la composition multigenres et du mix, avec une maîtrise avancée des outils de l'industrie 
+            (Serum, Phase Plant, FabFilter, iZotope RX, Waves). Je transforme vos concepts en identités sonores de haute qualité.
         </p>
 
-        <h2 class="section-title">SOUND PORTFOLIO</h2>
-
-        <div id="video-grid">
-            <div class="video-container" onclick="openCinema('Y1f_CGGupNg')">
-                <div class="video-click-overlay"></div>
-                <iframe src="https://www.youtube.com/embed/Y1f_CGGupNg?controls=0" frameborder="0"></iframe>
+        <section id="portfolio">
+            <h2 class="section-title">Visual Audio</h2>
+            <div id="video-grid">
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/Y1f_CGGupNg?modestbranding=1&rel=0" allowfullscreen></iframe>
+                </div>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/9B5XMo0LKks?modestbranding=1&rel=0" allowfullscreen></iframe>
+                </div>
             </div>
-            <div class="video-container" onclick="openCinema('9B5XMo0LKks')">
-                <div class="video-click-overlay"></div>
-                <iframe src="https://www.youtube.com/embed/9B5XMo0LKks?controls=0" frameborder="0"></iframe>
+        </section>
+
+        <section id="audio">
+            <h2 class="section-title">Records</h2>
+            <div class="audio-container">
+                <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" 
+                src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ytusprod/ytus-chemin-prod-beatsbynice&color=%23ffffff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false"></iframe>
             </div>
-        </div>
+        </section>
 
-        <div class="content-divider"></div>
+        <section id="contact">
+            <h2 class="section-title">Contact</h2>
+            <a href="mailto:shady.beckoury@gmail.com" class="email-link">shady.beckoury@gmail.com</a>
+        </section>
 
-        <h2 class="section-title">REC</h2>
-
-        <div class="soundcloud-container">
-            <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ytusprod/ytus-chemin-prod-beatsbynice&color=%23ffffff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
-        </div>
-    </section>
-
-    <section id="contact">
-        <h2 class="section-title">CONTACT</h2>
-        <div id="contact-form">
-            <a href="mailto:shady.beckoury@gmail.com" class="submit-btn">CONTACTEZ MOI</a>
-        </div>
-    </section>
-
-    <footer>
-        TACTICAL_WHITE_v3.0 // SHADY OS // 2026
-    </footer>
+        <footer>
+            © 2026 SHADY BECKOURY
+        </footer>
+    </main>
 
     <script>
-        const cinemaOverlay = document.getElementById('cinema-overlay');
-        const cinemaIframe = document.getElementById('cinema-iframe');
-
-        function openCinema(videoId) {
-            const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1`;
-            cinemaIframe.src = embedUrl;
-            cinemaOverlay.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeCinema() {
-            cinemaOverlay.style.display = 'none';
-            cinemaIframe.src = '';
-            document.body.style.overflow = 'auto';
-        }
-
-        cinemaOverlay.addEventListener('click', function(e) {
-            if (e.target === cinemaOverlay) closeCinema();
+        const themeBtn = document.getElementById('theme-toggle');
+        
+        themeBtn.addEventListener('click', () => {
+            const body = document.body;
+            const isDark = !body.hasAttribute('data-theme');
+            
+            if (isDark) {
+                // Passage en mode clair
+                body.setAttribute('data-theme', 'light');
+                themeBtn.textContent = 'Sombre';
+            } else {
+                // Passage en mode sombre
+                body.removeAttribute('data-theme');
+                themeBtn.textContent = 'Clair';
+            }
         });
-
-        const title = document.getElementById('ascii-title');
-        setInterval(() => { 
-            title.style.textShadow = "2px 0 #fff, -2px 0 #fff";
-            setTimeout(() => title.style.textShadow = "none", 150);
-        }, 4000);
     </script>
 
 </body>
